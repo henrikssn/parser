@@ -55,11 +55,9 @@ lwm as bs
 -- equals: true if lists is equivalent, otherwise false
 equals :: Eq a => [a] -> [a] -> Bool
 equals [] [] = True
-equals [] (_:_) = False
-equals (_:_) [] = False
 equals (a:as) (b:bs)
     | a == b = equals as bs
-    | otherwise = False
+equals _ _ = False
 
 -- orElse: returns first parameter if that is not Nothing, notherwise second parameter
 orElse :: Maybe a -> Maybe a -> Maybe a
