@@ -3,23 +3,23 @@
 
 import Data.List
 
--- joinWith: join strings with a given separator character.
-joinWith :: [String] -> Char -> String
+-- joinWith: join lists with a given separator element.
+joinWith :: [[a]] -> a -> [a]
 joinWith []     _   = []
 joinWith [x]    _   = x
 joinWith (x:xs) sep = x ++ [sep] ++ (xs `joinWith` sep)
 
 -- splitWithout: like splitAt, but discards the pivot element.
-splitWithout :: String -> Int -> (String, String)
-splitWithout ""  _ = ("", "")
-splitWithout str i = (i `take` str, (i + 1) `drop` str)
+splitWithout :: [a] -> Int -> ([a], [a])
+splitWithout []  _ = ([], [])
+splitWithout lst i = (i `take` lst, (i + 1) `drop` lst)
 
--- splitOn: split string on a given character.
-splitOn :: String -> Char -> [String]
-splitOn ""  _   = ""
-splitOn str piv = let pair = (maybe (str, "") 
-                                    (splitWithout str)
-                                    (piv `elemIndex` str))
+-- splitOn: split list on a given element.
+splitOn :: (Eq a) => [a] -> a -> [[a]]
+splitOn []  _   = []
+splitOn lst piv = let pair = (maybe (lst, []) 
+                                    (splitWithout lst)
+                                    (piv `elemIndex` lst))
                   in [fst pair] ++ splitOn (snd pair) piv
 
 -- substitute: replace wildcards in string.
