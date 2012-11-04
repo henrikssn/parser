@@ -1,4 +1,5 @@
--- Chatterbit program in Haskell
+-- Chatterbot program in Haskell
+-- Johan Förberg F10 & Erik Henriksson π10                
 
 import Data.List
 
@@ -21,9 +22,15 @@ splitOn str piv = let pair = (maybe (str, "")
                                     (piv `elemIndex` str))
                   in [fst pair] ++ splitOn (snd pair) piv
 
+-- substitute: replace wildcards in string.
+substitute :: Eq a => a -> [a] -> [a] -> [a]
+substitute _ [] _ = []
+substitute w (a:as) b 
+    | w==a      = b ++ (substitute w as b) 
+    | otherwise = a :  (substitute w as b)
+
 -- Test
 
 s = "abc"
 d = 'b'
 
-                
