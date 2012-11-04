@@ -3,11 +3,11 @@
 
 import Data.List
 
--- joinWith: join lists with a given separator element.
-joinWith :: [[a]] -> a -> [a]
+-- joinWith: join lists with a given separator list.
+joinWith :: [[a]] -> [a] -> [a]
 joinWith []     _   = []
 joinWith [x]    _   = x
-joinWith (x:xs) sep = x ++ [sep] ++ (xs `joinWith` sep)
+joinWith (x:xs) sep = x ++ sep ++ (xs `joinWith` sep)
 
 -- splitWithout: like splitAt, but discards the pivot element.
 splitWithout :: [a] -> Int -> ([a], [a])
@@ -22,12 +22,10 @@ splitOn lst piv = let pair = (maybe (lst, [])
                                     (piv `elemIndex` lst))
                   in [fst pair] ++ splitOn (snd pair) piv
 
--- substitute: replace wildcards in string.
-substitute :: Eq a => a -> [a] -> [a] -> [a]
+-- substitute: replace wildcard elements in list.
+--substitute :: Eq a => a -> [a] -> [a] -> [a]
 substitute _ [] _ = []
-substitute w (a:as) b 
-    | w==a      = b ++ (substitute w as b) 
-    | otherwise = a :  (substitute w as b)
+substitute wc wlist slist = (joinWith (wlist `splitOn` wc) slist)
 
 -- Test
 
