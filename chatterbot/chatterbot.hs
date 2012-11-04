@@ -23,8 +23,7 @@ splitOn lst piv = let pair = (maybe (lst, [])
                   in [fst pair] ++ splitOn (snd pair) piv
 
 -- substitute: replace wildcard elements in list.
---substitute :: Eq a => a -> [a] -> [a] -> [a]
-substitute _ [] _ = []
+substitute :: Eq a => a -> [a] -> [a] -> [a]
 substitute wc wlist slist = (joinWith (wlist `splitOn` wc) slist)
 
 -- Test
