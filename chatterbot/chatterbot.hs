@@ -10,21 +10,20 @@ joinWith [x]    _   = x
 joinWith (x:xs) sep = x ++ sep ++ (xs `joinWith` sep)
 
 -- splitWithout: like splitAt, but discards the pivot element.
-splitWithout :: [a] -> Int -> ([a], [a])
-splitWithout []  _ = ([], [])
-splitWithout lst i = (i `take` lst, (i + 1) `drop` lst)
+splitWithout :: Int -> [a] -> ([a], [a])
+splitWithout i lst = (\(a,b) -> (a,tail b)) (splitAt i lst)
 
--- splitOn: split list on a given element.
-splitOn :: (Eq a) => [a] -> a -> [[a]]
-splitOn []  _   = []
-splitOn lst piv = let pair = (maybe (lst, []) 
-                                    (splitWithout lst)
+-- splitOn: split list on a given element, and discard that element.
+splitOn :: (Eq a) => a -> [a] -> [[a]]
+splitOn _  []   = []
+splitOn piv lst = let pair = (maybe (lst, []) 
+                                    ((\x y -> splitWithout y x) lst)
                                     (piv `elemIndex` lst))
-                  in [fst pair] ++ splitOn (snd pair) piv
+                  in [fst pair] ++ splitOn piv (snd pair)
 
 -- substitute: replace wildcard elements in list.
 substitute :: Eq a => a -> [a] -> [a] -> [a]
-substitute wc wlist = joinWith (wlist `splitOn` wc)
+substitute wc = joinWith . (splitOn wc)
 
 -- match: According to problem description
 -- TODO: Does only work with one wildcard and will return Nothing for more
