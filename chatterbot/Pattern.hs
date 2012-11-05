@@ -85,12 +85,14 @@ matchCheck = matchTest == Just testSubstitutions
 
 -- Applying a single pattern
 transformationApply :: Eq a => a -> ([a] -> [a]) -> [a] -> ([a], [a]) -> Maybe [a]
---transformationApply _ _ _ _ = Nothing
 transformationApply piv f str pattern = maybe Nothing
                                               (\x -> Just (substitute piv (snd pattern) x))
                                               (match piv (fst pattern) str)
 
 -- Applying a list of patterns until one succeeds
 transformationsApply :: Eq a => a -> ([a] -> [a]) -> [([a], [a])] -> [a] -> Maybe [a]
-transformationsApply _ _ _ _ = Nothing
-{- TO BE WRITTEN -}
+transformationsApply _   _ []     _   = Nothing
+transformationsApply piv f (x:xs) str = maybe (transformationsApply piv f xs str)
+                                              (\x -> Just x)
+                                              (transformationApply piv f str x)
+                                              
