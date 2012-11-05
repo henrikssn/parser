@@ -1,18 +1,23 @@
 module Pattern where
 import Utilities
 import Data.List
+import Data.Maybe
 
 -------------------------------------------------------
 -- Match and substitute
 --------------------------------------------------------
 
 -- substitute: replace wildcard elements in list.
+-- TODO: Fix it! Keeping my old working version for now.
 substitute :: Eq a => a -> [a] -> [a] -> [a]
-substitute wc = (flip intercalate) . (splitOn wc)
+--substitute wc = (flip intercalate) . (splitOn wc)
+substitute _ [] _ = []
+substitute w (a:as) b
+    | w==a = b ++ (substitute w as b)
+    | otherwise = a : (substitute w as b)
+
 
 -- match: According to problem description
--- TODO: Does only work with one wildcard and will return Nothing for more
---       than one.
 match :: Eq a => a -> [a] -> [a] -> Maybe [a]
 match _ [] [] = Just []
 match piv s@(a:as) t@(b:bs)
@@ -21,22 +26,19 @@ match piv s@(a:as) t@(b:bs)
 
 
 matchHelper :: Eq a => a -> [a] -> [a] -> Maybe [a]
+matchHelper _ [] [] = Just []
+matchHelper _ [] _  = Nothing
+matchHelper _ _  [] = Nothing
 matchHelper piv s@(a:as) t@(b:bs)
     | a == b   = matchHelper piv as bs
-    | a == piv = matchFirst piv [] as t
+    | a == piv = matchFirst piv [] s t
     | otherwise = Nothing
-
-swm :: Eq a => [a] -> [a] -> Maybe [a]
-swm (a:as) (b:bs)
-    | as == bs = Just [b]
-    | otherwise = Nothing
-swm _ _ = Nothing
 
 matchFirst :: Eq a => a -> [a] -> [a] -> [a] -> Maybe [a]
 matchFirst _ _ [] _  = Nothing
 matchFirst _ _ _  [] = Nothing
 matchFirst piv m (a:as) (b:bs)
-    | equals piv as bs = Just m
+    | equals piv as bs = Just (m++[b])
     | otherwise = matchFirst piv (m++[b]) (a:as) bs
 
 
@@ -83,9 +85,10 @@ matchCheck = matchTest == Just testSubstitutions
 
 -- Applying a single pattern
 transformationApply :: Eq a => a -> ([a] -> [a]) -> [a] -> ([a], [a]) -> Maybe [a]
-transformationApply _ _ _ _ = Nothing
-{- TO BE WRITTEN -}
-
+--transformationApply _ _ _ _ = Nothing
+transformationApply piv f str pattern = maybe Nothing
+                                              (\x -> Just (substitute piv (snd pattern) x))
+                                              (match piv (fst pattern) str)
 
 -- Applying a list of patterns until one succeeds
 transformationsApply :: Eq a => a -> ([a] -> [a]) -> [([a], [a])] -> [a] -> Maybe [a]
