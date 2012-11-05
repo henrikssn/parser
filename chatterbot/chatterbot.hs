@@ -24,9 +24,9 @@ substitute wc = (flip intercalate) . (splitOn wc)
 --       than one.
 match :: Eq a => a -> [a] -> [a] -> Maybe [a]
 match _ [] [] = Just []
-match w (a:as) (b:bs)
+match w s@(a:as) t@(b:bs)
     | a == b = match w as bs
-    | a == w = orElse (swm (a:as) (b:bs)) (lwm (a:as) (b:bs))
+    | a == w = orElse (swm s t) (lwm s t)
     | otherwise = Nothing
 
 -- swm: According to description of "singleWildcardMatch"
