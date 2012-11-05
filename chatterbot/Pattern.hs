@@ -15,12 +15,16 @@ substitute wc = (flip intercalate) . (splitOn wc)
 --       than one.
 match :: Eq a => a -> [a] -> [a] -> Maybe [a]
 match _ [] [] = Just []
-match w s@(a:as) t@(b:bs)
-    | a == b = match w as bs
-    | a == w = orElse (swm s t) (lwm s t)
+match piv s@(a:as) t@(b:bs)
+    | matches piv s t = matchHelper piv s t
     | otherwise = Nothing
 
 
+matchHelper :: Eq a => a -> [a] -> [a] -> Maybe [a]
+matchHelper piv s@(a:as) t@(b:bs)
+    | a == b   = matchHelper piv as bs
+    | a == piv = matchFirst piv [] as t
+    | otherwise = Nothing
 
 swm :: Eq a => [a] -> [a] -> Maybe [a]
 swm (a:as) (b:bs)
@@ -28,14 +32,35 @@ swm (a:as) (b:bs)
     | otherwise = Nothing
 swm _ _ = Nothing
 
-lwm (wc:ps) (x:xs) = Nothing
-lwm [] _ = Nothing
-lwm _ [] = Nothing
-lwm as bs
-    | last as == last bs = lwm (init as) (init bs)
-    | length as == 1 && length bs > 1 = Just bs
-    | otherwise = Nothing
+matchFirst :: Eq a => a -> [a] -> [a] -> [a] -> Maybe [a]
+matchFirst _ _ [] _  = Nothing
+matchFirst _ _ _  [] = Nothing
+matchFirst piv m (a:as) (b:bs)
+    | equals piv as bs = Just m
+    | otherwise = matchFirst piv (m++[b]) (a:as) bs
 
+
+matches :: Eq a => a -> [a] -> [a] -> Bool
+matches _ [] [] = True
+matches _ [] _  = False
+matches _ _  [] = False
+matches piv (p:pattern) (x:xs)
+    | p == x = matches piv pattern xs
+    | p == piv =    if (equals piv pattern xs) then
+                        matches piv pattern xs
+                    else
+                        matches piv (p:pattern) xs
+    | otherwise = False
+
+
+equals :: Eq a => a -> [a] -> [a] -> Bool
+equals _ [] [] = True
+equals _ [] _  = False
+equals _ _  [] = False
+equals piv (x:xs) (y:ys)
+    | x == y = equals piv xs ys
+    | x == piv = True
+    | otherwise = False
 
 
 -- Test cases --------------------
