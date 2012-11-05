@@ -8,14 +8,8 @@ import Data.Maybe
 --------------------------------------------------------
 
 -- substitute: replace wildcard elements in list.
--- TODO: Fix it! Keeping my old working version for now.
 substitute :: Eq a => a -> [a] -> [a] -> [a]
---substitute wc = (flip intercalate) . (splitOn wc)
-substitute _ [] _ = []
-substitute w (a:as) b
-    | w==a = b ++ (substitute w as b)
-    | otherwise = a : (substitute w as b)
-
+substitute piv list s = concat (map (\x -> if x == piv then s else [x]) list) 
 
 -- match: According to problem description
 match :: Eq a => a -> [a] -> [a] -> Maybe [a]
