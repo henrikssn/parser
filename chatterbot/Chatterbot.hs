@@ -41,8 +41,7 @@ rulesApply :: [PhrasePair] -> Phrase -> Phrase
 rulesApply _ = id
 
 reflect :: Phrase -> Phrase
-{- TO BE WRITTEN -}
-reflect = id
+reflect = map (\x -> maybe x id (lookup x reflections))
 
 endOfDialog :: String -> Bool
 endOfDialog = (=="quit") . map toLower
