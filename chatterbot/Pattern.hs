@@ -9,7 +9,7 @@ import Data.Maybe
 
 -- substitute: replace wildcard elements in list.
 substitute :: Eq a => a -> [a] -> [a] -> [a]
-substitute piv list s = concat (map (\x -> if x == piv then s else [x]) list) 
+substitute piv list s = concat $ map (\x -> if x == piv then s else [x]) list
 
 -- match: According to problem description
 match :: Eq a => a -> [a] -> [a] -> Maybe [a]
