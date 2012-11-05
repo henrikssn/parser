@@ -19,20 +19,13 @@ substitute w (a:as) b
 
 -- match: According to problem description
 match :: Eq a => a -> [a] -> [a] -> Maybe [a]
-match _ [] [] = Just []
+match _   []       [] = Just []
+match _   []       _  = Nothing
+match _   _        [] = Nothing
 match piv s@(a:as) t@(b:bs)
-    | matches piv s t = matchHelper piv s t
-    | otherwise = Nothing
-
-
-matchHelper :: Eq a => a -> [a] -> [a] -> Maybe [a]
-matchHelper _ [] [] = Just []
-matchHelper _ [] _  = Nothing
-matchHelper _ _  [] = Nothing
-matchHelper piv s@(a:as) t@(b:bs)
-    | a == b   = matchHelper piv as bs
-    | a == piv = matchFirst piv [] s t
-    | otherwise = Nothing
+    | a == b                        = match piv as bs
+    | a == piv && matches piv s t   = matchFirst piv [] s t
+    | otherwise                     = Nothing
 
 matchFirst :: Eq a => a -> [a] -> [a] -> [a] -> Maybe [a]
 matchFirst _ _ [] _  = Nothing
