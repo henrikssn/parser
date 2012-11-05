@@ -1,5 +1,19 @@
 module Utilities where
 
+import Data.List
+
+-- splitWithout: like splitAt, but discards the pivot element.
+splitWithout :: Int -> [a] -> ([a], [a])
+splitWithout i lst = (\(a,b) -> (a,tail b)) (splitAt i lst)
+
+-- splitOn: split list on a given element, and discard that element.
+splitOn :: (Eq a) => a -> [a] -> [[a]]
+splitOn _  []   = []
+splitOn piv lst = let pair = (maybe (lst, []) 
+                                    (flip splitWithout lst)
+                                    (piv `elemIndex` lst))
+                  in [fst pair] ++ splitOn piv (snd pair)
+
 map2 :: (a -> b, c -> d) -> (a, c) -> (b, d)
 map2 (f1, f2) (x1, x2) = (f1 x1, f2 x2)
 
