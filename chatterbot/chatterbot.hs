@@ -1,57 +1,106 @@
--- Chatterbot program in Haskell
--- Johan Förberg F10 & Erik Henriksson π10                
+module Chatterbot where
+import Utilities
+import Pattern
+import Random
+import Char
 
-import Data.List
 
--- splitWithout: like splitAt, but discards the pivot element.
-splitWithout :: Int -> [a] -> ([a], [a])
-splitWithout i lst = (\(a,b) -> (a,tail b)) (splitAt i lst)
 
--- splitOn: split list on a given element, and discard that element.
-splitOn :: (Eq a) => a -> [a] -> [[a]]
-splitOn _  []   = []
-splitOn piv lst = let pair = (maybe (lst, []) 
-                                    (flip splitWithout lst)
-                                    (piv `elemIndex` lst))
-                  in [fst pair] ++ splitOn piv (snd pair)
+chatterbot :: String -> [(String, [String])] -> IO ()
+chatterbot botName botRules = do
+    putStrLn ("\n\nHi! I am " ++ botName ++ ". How are you?")
+    botloop
+  where
+    brain = rulesCompile botRules
+    botloop = do
+      putStr "\n: "
+      question <- getLine
 
--- substitute: replace wildcard elements in list.
-substitute :: Eq a => a -> [a] -> [a] -> [a]
-substitute wc = (flip intercalate) . (splitOn wc)
+      answer <- stateOfMind brain
+      putStrLn (botName ++ ": " ++ (present . answer . prepare) question)
 
--- match: According to problem description
--- TODO: Does only work with one wildcard and will return Nothing for more
---       than one.
-match :: Eq a => a -> [a] -> [a] -> Maybe [a]
-match _ [] [] = Just []
-match w s@(a:as) t@(b:bs)
-    | a == b = match w as bs
-    | a == w = orElse (swm s t) (lwm s t)
-    | otherwise = Nothing
+      if (not.endOfDialog) question then botloop else return ()
 
--- swm: According to description of "singleWildcardMatch"
-swm :: Eq a => [a] -> [a] -> Maybe [a]
-swm (a:as) (b:bs)
-    | as == bs = Just [b]
-    | otherwise = Nothing
-swm _ _ = Nothing
+--------------------------------------------------------
 
--- lwm: According to description of "longerWildcardMatch"
-lwm :: Eq a => [a] -> [a] -> Maybe [a]
-lwm [] _ = Nothing
-lwm _ [] = Nothing
-lwm as bs
-    | last as == last bs = lwm (init as) (init bs)
-    | length as == 1 && length bs > 1 = Just bs
-    | otherwise = Nothing
+type Phrase = [String]
+type PhrasePair = (Phrase, Phrase)
+type BotBrain = [(Phrase, [Phrase])]
 
--- orElse: returns first parameter if that is not Nothing, notherwise second parameter
-orElse :: Maybe a -> Maybe a -> Maybe a
-orElse Nothing  x  = x
-orElse (Just a) _  = Just a
 
--- Test
+--------------------------------------------------------
 
-s = "abc"
-d = 'b'
+stateOfMind :: BotBrain -> IO (Phrase -> Phrase)
+{- TO BE WRITTEN -}
+stateOfMind _ = return id
+
+rulesApply :: [PhrasePair] -> Phrase -> Phrase
+{- TO BE WRITTEN -}
+rulesApply _ = id
+
+reflect :: Phrase -> Phrase
+{- TO BE WRITTEN -}
+reflect = id
+
+reflections =
+  [ ("am",     "are"),
+    ("was",    "were"),
+    ("i",      "you"),
+    ("i'm",    "you are"),
+    ("i'd",    "you would"),
+    ("i've",   "you have"),
+    ("i'll",   "you will"),
+    ("my",     "your"),
+    ("me",     "you"),
+    ("are",    "am"),
+    ("you're", "i am"),
+    ("you've", "i have"),
+    ("you'll", "i will"),
+    ("your",   "my"),
+    ("yours",  "mine"),
+    ("you",    "me")
+  ]
+
+
+---------------------------------------------------------------------------------
+
+endOfDialog :: String -> Bool
+endOfDialog = (=="quit") . map toLower
+
+present :: Phrase -> String
+present = unwords
+
+prepare :: String -> Phrase
+prepare = reduce . words . map toLower . filter (not . flip elem ".,:;*!#%&|")
+
+rulesCompile :: [(String, [String])] -> BotBrain
+{- TO BE WRITTEN -}
+rulesCompile _ = []
+
+
+--------------------------------------
+
+
+reductions :: [PhrasePair]
+reductions = (map.map2) (words, words)
+  [ ( "please *", "*" ),
+    ( "can you *", "*" ),
+    ( "could you *", "*" ),
+    ( "tell me if you are *", "are you *" ),
+    ( "tell me who * is", "who is *" ),
+    ( "tell me what * is", "what is *" ),
+    ( "do you know who * is", "who is *" ),
+    ( "do you know what * is", "what is *" ),
+    ( "are you very *", "are you *" ),
+    ( "i am very *", "i am *" ),
+    ( "hi *", "hello *")
+  ]
+
+reduce :: Phrase -> Phrase
+reduce = reductionsApply reductions
+
+reductionsApply :: [PhrasePair] -> Phrase -> Phrase
+{- TO BE WRITTEN -}
+reductionsApply _ = id
+
 
