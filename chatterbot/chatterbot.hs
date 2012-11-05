@@ -3,12 +3,6 @@
 
 import Data.List
 
--- joinWith: join lists with a given separator list.
-joinWith :: [[a]] -> [a] -> [a]
-joinWith []     _   = []
-joinWith [x]    _   = x
-joinWith (x:xs) sep = x ++ sep ++ (xs `joinWith` sep)
-
 -- splitWithout: like splitAt, but discards the pivot element.
 splitWithout :: Int -> [a] -> ([a], [a])
 splitWithout i lst = (\(a,b) -> (a,tail b)) (splitAt i lst)
@@ -23,7 +17,7 @@ splitOn piv lst = let pair = (maybe (lst, [])
 
 -- substitute: replace wildcard elements in list.
 substitute :: Eq a => a -> [a] -> [a] -> [a]
-substitute wc = joinWith . (splitOn wc)
+substitute wc = (\x y -> intercalate y x) . (splitOn wc)
 
 -- match: According to problem description
 -- TODO: Does only work with one wildcard and will return Nothing for more
