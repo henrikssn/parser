@@ -53,8 +53,8 @@ prepare :: String -> Phrase
 prepare = reduce . words . map toLower . filter (not . flip elem ".,:;*!#%&|")
 
 rulesCompile :: [(String, [String])] -> BotBrain
-{- TO BE WRITTEN -}
-rulesCompile _ = []
+rulesCompile [] = []
+rulesCompile ((a,b):xs) = (prepare a, map prepare b) : rulesCompile xs
 
 reduce :: Phrase -> Phrase
 reduce = reductionsApply reductions
