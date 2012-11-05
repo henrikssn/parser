@@ -11,13 +11,13 @@ splitWithout i lst = (\(a,b) -> (a,tail b)) (splitAt i lst)
 splitOn :: (Eq a) => a -> [a] -> [[a]]
 splitOn _  []   = []
 splitOn piv lst = let pair = (maybe (lst, []) 
-                                    ((\x y -> splitWithout y x) lst)
+                                    (flip splitWithout lst)
                                     (piv `elemIndex` lst))
                   in [fst pair] ++ splitOn piv (snd pair)
 
 -- substitute: replace wildcard elements in list.
 substitute :: Eq a => a -> [a] -> [a] -> [a]
-substitute wc = (\x y -> intercalate y x) . (splitOn wc)
+substitute wc = (flip intercalate) . (splitOn wc)
 
 -- match: According to problem description
 -- TODO: Does only work with one wildcard and will return Nothing for more
@@ -32,7 +32,7 @@ match w (a:as) (b:bs)
 -- swm: According to description of "singleWildcardMatch"
 swm :: Eq a => [a] -> [a] -> Maybe [a]
 swm (a:as) (b:bs)
-    | equals as bs = Just [b]
+    | as == bs = Just [b]
     | otherwise = Nothing
 swm _ _ = Nothing
 
@@ -44,13 +44,6 @@ lwm as bs
     | last as == last bs = lwm (init as) (init bs)
     | length as == 1 && length bs > 1 = Just bs
     | otherwise = Nothing
-
--- equals: true if lists is equivalent, otherwise false
-equals :: Eq a => [a] -> [a] -> Bool
-equals [] [] = True
-equals (a:as) (b:bs)
-    | a == b = equals as bs
-equals _ _ = False
 
 -- orElse: returns first parameter if that is not Nothing, notherwise second parameter
 orElse :: Maybe a -> Maybe a -> Maybe a
