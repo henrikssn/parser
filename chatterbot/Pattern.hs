@@ -1,4 +1,5 @@
 module Pattern where
+
 import Utilities
 import Data.List
 import Data.Maybe
@@ -9,9 +10,11 @@ import Data.Maybe
 
 -- substitute: replace wildcard elements in list.
 substitute :: Eq a => a -> [a] -> [a] -> [a]
-substitute piv list s = concat $ map (\x -> if x == piv then s else [x]) list
+substitute wc list sub = 
+  concat $ map replaceWildcards list
+    where replaceWildcards el = if el == wc then sub else [el]
 
--- match: According to problem description
+-- match: try to match wildcards in a string and return the first match.
 match :: Eq a => a -> [a] -> [a] -> Maybe [a]
 match _   []       [] = Just []
 match _   []       _  = Nothing
