@@ -39,12 +39,13 @@ rulesApply :: [PhrasePair] -> Phrase -> Phrase
 {- TO BE WRITTEN -}
 rulesApply _ = id
 
+-- reflect: try to replace each word with the appropriate reflection.
 reflect :: Phrase -> Phrase
-reflect = let replaceMaybe word = try (flip lookup reflections) word
-          in  map replaceMaybe
+reflect = map . try $ flip lookup reflections
 
+-- 
 endOfDialog :: String -> Bool
-endOfDialog = (=="quit") . map toLower
+endOfDialog = flip elem ["quit", "goodbye"] . map toLower
 
 present :: Phrase -> String
 present = unwords
