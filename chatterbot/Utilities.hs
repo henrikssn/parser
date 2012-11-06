@@ -12,6 +12,14 @@ splitOn :: (Eq a) => a -> [a] -> [[a]]
 splitOn piv = foldr (\(y:_) xxs@(x:xs) -> if y == piv then []:xxs else (y:x):xs) 
                     [[]] . init . tails
 
+-- takeBefore: returns everything before a searchlist in a list
+takeBefore :: (Eq a) => [a] -> [a] -> [a]  
+takeBefore slist = let matchSubStr y xxs@(x:xs) = 
+                        if take (length slist) y == slist 
+                        then []:xxs 
+                        else ((head y):x):xs 
+                   in head . foldr matchSubStr [[]] . init . tails
+
 map2 :: (a -> b, c -> d) -> (a, c) -> (b, d)
 map2 (f1, f2) (x1, x2) = (f1 x1, f2 x2)
 
