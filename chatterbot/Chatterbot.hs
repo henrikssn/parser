@@ -3,7 +3,6 @@
 
 module Chatterbot where
 
-import System.Random
 import Data.Char
 
 import Utilities
@@ -41,7 +40,8 @@ rulesApply :: [PhrasePair] -> Phrase -> Phrase
 rulesApply _ = id
 
 reflect :: Phrase -> Phrase
-reflect = map (\x -> maybe x id (lookup x reflections))
+reflect = let replaceMaybe word = try (flip lookup reflections) word
+          in  map replaceMaybe
 
 endOfDialog :: String -> Bool
 endOfDialog = (=="quit") . map toLower
