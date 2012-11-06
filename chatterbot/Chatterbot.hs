@@ -43,7 +43,7 @@ rulesApply _ = id
 reflect :: Phrase -> Phrase
 reflect = map . try $ flip lookup reflections
 
--- 
+-- endOfDialog: are we done yet?
 endOfDialog :: String -> Bool
 endOfDialog = flip elem ["quit", "goodbye"] . map toLower
 
@@ -61,8 +61,7 @@ reduce :: Phrase -> Phrase
 reduce = reductionsApply reductions
 
 reductionsApply :: [PhrasePair] -> Phrase -> Phrase
-{- TO BE WRITTEN -}
-reductionsApply _ = id
+reductionsApply reductions phrase = []
 
 -- LITERALS --
 
@@ -86,7 +85,7 @@ reflections =
   ]
 
 reductions :: [PhrasePair]
-reductions = (map.map2) (words, words)
+reductions = (map . map2) (words, words)
   [ ( "please *", "*" ),
     ( "can you *", "*" ),
     ( "could you *", "*" ),
