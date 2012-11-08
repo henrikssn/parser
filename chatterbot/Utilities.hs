@@ -9,7 +9,14 @@ splitWithout i lst = (\(a,b) -> (a,tail b)) (splitAt i lst)
 -- splitOn: split list on a given element, and discard that element.
 --          Lambda function in foldl :: [[a]] -> [a] -> [[a]]
 splitOn :: (Eq a) => a -> [a] -> [[a]]
-splitOn piv = foldr (\(y:_) xxs@(x:xs) -> if y == piv then []:xxs else (y:x):xs) 
+splitOn piv = foldr (\(y:_) xxs@(x:xs) -> if y == piv 
+                                          then []:xxs else (y:x):xs) 
+                    [[]] . init . tails
+
+-- splitWith: a splitOn that retains the pivot.
+splitWith :: (Eq a) => a -> [a] -> [[a]]
+splitWith piv = foldr (\(y:_) xxs@(x:xs) -> if y == piv 
+                                            then []:[y]:xxs else (y:x):xs) 
                     [[]] . init . tails
 
 -- takeBefore: returns everything before a searchlist in a list

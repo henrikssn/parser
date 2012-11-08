@@ -23,7 +23,7 @@ chatterbot botName botRules = do
 
       answer <- stateOfMind brain
 --    putStrLn (botName ++ ": " ++ 
-      putStrLn $ (present . answer . prepare) question
+      putStrLn $ (present . punctuate . capitalise . answer . prepare) question
 
       if (not.endOfDialog) question then botloop else return ()
 
@@ -50,6 +50,21 @@ rulesApply dict phrase =
 
 --isolationDict :: [(Phrase, a)] -> [Phrase, Phrase]
 --isolationDict dict = map (\ pp -> (fst pp, ["*"])) dict
+
+capitalise :: Phrase -> Phrase
+capitalise phrase = 
+  (words . concat . map firstUpper . splitWith '.' . unwords) phrase
+    where firstUpper :: String -> String
+          firstUpper ""       = ""
+          firstUpper (' ':cs) = ' ' : firstUpper cs
+          firstUpper str      = (toUpper . head $ str) : (tail str)
+
+punctuate :: Phrase -> Phrase
+punctuate []     = []
+punctuate phrase = if isPunctuation (last . last $ phrase)
+                   then phrase else init phrase ++ [last phrase ++ "."]
+
+--isPunctuation = flip elem ".,?:;!"
 
 onlyNonGeneral :: [PhrasePair] -> [PhrasePair]
 onlyNonGeneral dict = filter (\ pp -> fst pp /= [[_wc_]]) dict
