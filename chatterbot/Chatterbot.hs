@@ -45,7 +45,7 @@ rulesApply :: [PhrasePair] -> Phrase -> Phrase
 rulesApply dict phrase = 
   maybe (words "Does not compute!!!")
         id
-        (transformationsApply [_wc_] id dict phrase)
+        (transformationsApply [_wc_] id dict $ reflect phrase)
 
 --isolationDict :: [(Phrase, a)] -> [Phrase, Phrase]
 --isolationDict dict = map (\ pp -> (fst pp, ["*"])) dict
@@ -70,7 +70,7 @@ present :: Phrase -> String
 present = unwords
 
 prepare :: String -> Phrase
-prepare = reduce . words . map toLower . filter (not . flip elem ".,:;*!#%&|")
+prepare = reduce . words . map toLower . filter (not . flip elem ".,:;!#%&|")
 
 rulesCompile :: [(String, [String])] -> BotBrain
 rulesCompile [] = []
