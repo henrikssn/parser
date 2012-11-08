@@ -32,12 +32,17 @@ type BotBrain = [(Phrase, [Phrase])]
 --------------------------------------------------------
 
 stateOfMind :: BotBrain -> IO (Phrase -> Phrase)
-{- TO BE WRITTEN -}
-stateOfMind _ = return id
+stateOfMind brain = do
+--  random <- RandomIO
+  return id
 
 rulesApply :: [PhrasePair] -> Phrase -> Phrase
-{- TO BE WRITTEN -}
+  --let sign = transformationApply 
 rulesApply _ = id
+
+chooseResponse :: Int -> [(a, [a])] -> [(a, a)]
+chooseResponse i dict = map chooseOne dict
+  where chooseOne entry = (fst entry, snd entry !! (i `mod` (length $ snd entry)))
 
 -- reflect: try to replace each word with the appropriate reflection.
 reflect :: Phrase -> Phrase
