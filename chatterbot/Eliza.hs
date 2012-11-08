@@ -8,10 +8,10 @@ eliza = [
 
   ("I need *",
       ["Why do you need * ?",
-       "Would it really help you to get * ?",
+       "Would it really help you to get * ?"]),
 
   ("Open the *",
-       ["I'm sorry *, I'm afraid I can't let you do that."]),
+       ["I'm sorry Dave, I'm afraid I can't let you do that."]),
 
   ("Why don't you *",
       ["Do you really think I don't * ?",
