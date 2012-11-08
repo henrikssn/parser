@@ -1,6 +1,6 @@
 import Chatterbot
 
-main = chatterbot "Skynet" eliza
+main = chatterbot "Eliza" eliza
 
 eliza = [
   ("",

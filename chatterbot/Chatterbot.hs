@@ -53,11 +53,13 @@ rulesApply dict phrase =
 
 capitalise :: Phrase -> Phrase
 capitalise phrase = 
-  (words . concat . map firstUpper . splitWith '.' . unwords) phrase
+  (map capI . words . concat . map firstUpper . splitWith '.' . unwords) phrase
     where firstUpper :: String -> String
           firstUpper ""       = ""
           firstUpper (' ':cs) = ' ' : firstUpper cs
           firstUpper str      = (toUpper . head $ str) : (tail str)
+          capI "i" = "I"
+          capI  w  =  w
 
 punctuate :: Phrase -> Phrase
 punctuate []     = []
