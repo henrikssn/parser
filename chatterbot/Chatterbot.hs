@@ -4,9 +4,12 @@
 module Chatterbot where
 
 import Data.Char
+import System.Random
 
 import Utilities
 import Pattern
+
+_wc_ = '*'
 
 chatterbot :: String -> [(String, [String])] -> IO ()
 chatterbot botName botRules = do
@@ -15,11 +18,12 @@ chatterbot botName botRules = do
   where
     brain = rulesCompile botRules
     botloop = do
-      putStr "\n: "
+      putStr "\n"
       question <- getLine
 
       answer <- stateOfMind brain
-      putStrLn (botName ++ ": " ++ (present . answer . prepare) question)
+--    putStrLn (botName ++ ": " ++ 
+      putStrLn $ (present . answer . prepare) question
 
       if (not.endOfDialog) question then botloop else return ()
 
@@ -33,16 +37,26 @@ type BotBrain = [(Phrase, [Phrase])]
 
 stateOfMind :: BotBrain -> IO (Phrase -> Phrase)
 stateOfMind brain = do
---  random <- RandomIO
-  return id
+  randn <- randomIO
+  let dict = chooseResponse randn brain
+  return (rulesApply dict)
 
 rulesApply :: [PhrasePair] -> Phrase -> Phrase
-  --let sign = transformationApply 
-rulesApply _ = id
+rulesApply dict phrase = 
+  maybe (words "Does not compute!!!")
+        id
+        (transformationsApply [_wc_] id dict phrase)
+
+--isolationDict :: [(Phrase, a)] -> [Phrase, Phrase]
+--isolationDict dict = map (\ pp -> (fst pp, ["*"])) dict
+
+onlyNonGeneral :: [PhrasePair] -> [PhrasePair]
+onlyNonGeneral dict = filter (\ pp -> fst pp /= [[_wc_]]) dict
 
 chooseResponse :: Int -> [(a, [a])] -> [(a, a)]
 chooseResponse i dict = map chooseOne dict
-  where chooseOne entry = (fst entry, snd entry !! (i `mod` (length $ snd entry)))
+  where chooseOne entry = (fst entry, snd entry !! 
+                           (i `mod` (length $ snd entry)))
 
 -- reflect: try to replace each word with the appropriate reflection.
 reflect :: Phrase -> Phrase
@@ -69,7 +83,7 @@ reductionsApply :: [PhrasePair] -> Phrase -> Phrase
 reductionsApply patterns phrase = 
   maybe phrase
         words
-        (transformationsApply '*' id (unwrap patterns) $ unwords phrase)
+        (transformationsApply _wc_ id (unwrap patterns) $ unwords phrase)
 
 unwrap = map . map2 $ (unwords, unwords)
 

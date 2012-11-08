@@ -1,6 +1,6 @@
 import Chatterbot
 
-main = chatterbot "Eliza" eliza
+main = chatterbot "Skynet" eliza
 
 eliza = [
   ("",
@@ -9,7 +9,9 @@ eliza = [
   ("I need *",
       ["Why do you need * ?",
        "Would it really help you to get * ?",
-       "Are you sure you need * ?"]),
+
+  ("Open the *",
+       ["I'm sorry *, I'm afraid I can't let you do that."]),
 
   ("Why don't you *",
       ["Do you really think I don't * ?",
