@@ -45,8 +45,8 @@ rulesApply :: [PhrasePair] -> Phrase -> Phrase
 rulesApply dict phrase = 
   maybe (words "Does not compute!!!")
         id
-        (transformationsApply [_wc_] id dict 
-                 $ (reduce . reflect) phrase)
+        (transformationsApply [_wc_] reflect dict 
+                 $ reduce phrase)
 
 --isolationDict :: [(Phrase, a)] -> [Phrase, Phrase]
 --isolationDict dict = map (\ pp -> (fst pp, ["*"])) dict
