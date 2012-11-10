@@ -75,8 +75,8 @@ matchCheck = matchTest == Just testSubstitutions
 -- Applying a single pattern
 transformationApply :: Eq a => a -> ([a] -> [a]) -> [a] -> ([a], [a]) -> Maybe [a]
 transformationApply wc f str pattern = maybe Nothing
-                                             (Just . substitute wc (snd pattern)) 
-                                             (match wc (fst pattern) $ f str)
+                                             (Just . substitute wc (f . snd $ pattern)) 
+                                             (match wc (fst pattern) str)
 
 -- Applying a list of patterns until one succeeds
 transformationsApply :: Eq a => a -> ([a] -> [a]) -> [([a], [a])] -> [a] -> Maybe [a]
