@@ -43,7 +43,7 @@ stateOfMind brain = do
 
 rulesApply :: [PhrasePair] -> Phrase -> Phrase
 rulesApply dict phrase = 
-  maybe (words "Does not compute!!!")
+  maybe phrase
         id
         (transformationsApply [_wc_] reflect dict 
                  $ reduce phrase)
