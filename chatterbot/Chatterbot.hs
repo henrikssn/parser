@@ -48,19 +48,10 @@ rulesApply dict = try $ transformationsApply [_wc_] reflect dict . reduce
 --isolationDict dict = map (\ pp -> (fst pp, ["*"])) dict
 
 capitalise :: Phrase -> Phrase
-capitalise phrase = 
-  (map capI . words . concat . map firstUpper . splitWith '.' . unwords) phrase
-    where firstUpper :: String -> String
-          firstUpper ""       = ""
-          firstUpper (' ':cs) = ' ' : firstUpper cs
-          firstUpper str      = (toUpper . head $ str) : (tail str)
-          capI "i" = "I"
-          capI  w  =  w
+capitalise = id
 
 punctuate :: Phrase -> Phrase
-punctuate []     = []
-punctuate phrase = if isPunctuation (last . last $ phrase)
-                   then phrase else init phrase ++ [last phrase ++ "."]
+punctuate = id
 
 --isPunctuation = flip elem ".,?:;!"
 
