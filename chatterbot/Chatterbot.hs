@@ -42,11 +42,7 @@ stateOfMind brain = do
   return (rulesApply dict)
 
 rulesApply :: [PhrasePair] -> Phrase -> Phrase
-rulesApply dict phrase = 
-  maybe phrase
-        id
-        (transformationsApply [_wc_] reflect dict 
-                 $ reduce phrase)
+rulesApply dict = try $ transformationsApply [_wc_] reflect dict . reduce
 
 --isolationDict :: [(Phrase, a)] -> [Phrase, Phrase]
 --isolationDict dict = map (\ pp -> (fst pp, ["*"])) dict
