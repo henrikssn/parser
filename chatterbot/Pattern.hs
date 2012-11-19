@@ -11,7 +11,9 @@ import Data.Maybe
 -- substitute: replace wildcard elements in list.
 substitute :: Eq a => a -> [a] -> [a] -> [a]
 substitute wc list sub = concat $ map replaceWildcards list
-                           where replaceWildcards el = if el == wc then sub else [el]
+                           where replaceWildcards el 
+                                    | el == wc = sub
+                                    | otherwise = [el]
 
 -- match: try to match wildcards in a string and return the first match.
 match :: Eq a => a -> [a] -> [a] -> Maybe [a]
