@@ -15,44 +15,20 @@ substitute wc list sub = concat $ map replaceWildcards list
 
 -- match: try to match wildcards in a string and return the first match.
 match :: Eq a => a -> [a] -> [a] -> Maybe [a]
-match _   []       [] = Just []
-match _   []       _  = Nothing
-match _   _        [] = Nothing
-match wc s@(a:as) t@(b:bs)
-    | a == b                        = match wc as bs
-    | a == wc && matches wc s t   = matchFirst wc [] s t
-    | otherwise                     = Nothing
+match _ [] [] = Just []
+match _ [] _ = Nothing
+match _ _ [] = Nothing
+match wc aas@(a:as) bbs@(b:bs)
+    | a == b  = match wc as bs
+    | a == wc = orElse (swm wc aas bbs) (lwm wc aas bbs)
+    | otherwise = Nothing
 
-matchFirst :: Eq a => a -> [a] -> [a] -> [a] -> Maybe [a]
-matchFirst _ _ [] _  = Nothing
-matchFirst _ _ _  [] = Nothing
-matchFirst wc m (a:as) (b:bs)
-    | equals wc as bs = Just (m++[b])
-    | otherwise = matchFirst wc (m++[b]) (a:as) bs
+lwm :: Eq a => a -> [a] -> [a] -> Maybe [a]
+lwm _ _ [] = Nothing
+lwm wc aas@(_:as) (b:bs) = maybe (maybe Nothing (\x -> Just $ b:x) (lwm wc aas bs)) (\x -> Just [b]) (match wc as bs)
 
-
-matches :: Eq a => a -> [a] -> [a] -> Bool
-matches _ [] [] = True
-matches _ [] _  = False
-matches _ _  [] = False
-matches wc (p:pattern) (x:xs)
-    | p == x = matches wc pattern xs
-    | p == wc =    if (equals wc pattern xs) then
-                        matches wc pattern xs
-                    else
-                        matches wc (p:pattern) xs
-    | otherwise = False
-
-
-equals :: Eq a => a -> [a] -> [a] -> Bool
-equals _ [] [] = True
-equals _ [] _  = False
-equals _ _  [] = False
-equals wc (x:xs) (y:ys)
-    | x == y = equals wc xs ys
-    | x == wc = True
-    | otherwise = False
-
+swm :: Eq a => a -> [a] -> [a] -> Maybe [a]
+swm wc (_:as) (b:bs) = maybe Nothing (\x -> Just [b]) (match wc as bs) 
 
 -- Test cases --------------------
 
