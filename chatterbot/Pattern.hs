@@ -27,7 +27,9 @@ match wc aas@(a:as) bbs@(b:bs)
 
 lwm :: Eq a => a -> [a] -> [a] -> Maybe [a]
 lwm _ _ [] = Nothing
-lwm wc aas@(_:as) (b:bs) = maybe (maybe Nothing (\x -> Just $ b:x) (lwm wc aas bs)) (\x -> Just [b]) (match wc as bs)
+lwm wc aas@(_:as) (b:bs)
+    | match wc as bs /= Nothing = Just [b]
+    | otherwise = maybe Nothing (\x -> Just $ b:x) (lwm wc aas bs)
 
 swm :: Eq a => a -> [a] -> [a] -> Maybe [a]
 swm wc (_:as) (b:bs) = maybe Nothing (\x -> Just [b]) (match wc as bs) 
