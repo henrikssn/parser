@@ -59,7 +59,7 @@ transformationApply wc f str pattern = maybe Nothing
 -- Applying a list of patterns until one succeeds
 transformationsApply :: Eq a => a -> ([a] -> [a]) -> [([a], [a])] -> [a] -> Maybe [a]
 transformationsApply _   _ []     _   = Nothing
-transformationsApply wc  f (x:xs) str = maybe (transformationsApply wc f xs str)
-                                              Just
-                                              (transformationApply wc f str x)
-                                              
+transformationsApply wc f ptns str = foldl transform Nothing ptns
+                                     where transform res ptn
+                                            | res == Nothing = transformationApply wc f str ptn
+                                            | otherwise = res
