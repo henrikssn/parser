@@ -26,7 +26,7 @@ match wc aas@(a:as) bbs@(b:bs)
     | otherwise = Nothing
 
 lwm :: Eq a => a -> [a] -> [a] -> Maybe [a]
-lwm wc aas (b:bs) = mmap (\x -> b:x) (match wc aas bs)
+lwm wc aas (b:bs) = mmap (b:) (match wc aas bs)
 
 swm :: Eq a => a -> [a] -> [a] -> Maybe [a]
 swm wc (_:as) (b:bs) = mmap (\x -> [b]) (match wc as bs) 
