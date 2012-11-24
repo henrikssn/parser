@@ -12,7 +12,7 @@ type, we can translate that {\tt MidiFile} into a {\tt Music} object.
 >                  module MidiFile) 
 >   where
 >
-> import Ratio
+> import Data.Ratio
 > import Basics
 > import Performance
 > import MidiFile

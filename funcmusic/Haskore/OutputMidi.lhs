@@ -12,7 +12,7 @@ programs such as Cakewalk.
 > import System.IO
 > import Monads (Output, runO, outO)
 > import Bitops (bSplitAt, someBytes)
-> import Ix
+> import Data.Ix
 
 \end{verbatim}
 

@@ -4,8 +4,8 @@
 \begin{verbatim} 
 
 > module Basics where
-> import Ix
-> import Ratio
+> import Data.Ix
+> import Data.Ratio
 > infixr 5 :+:, :=:
 
 \end{verbatim} 

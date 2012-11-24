@@ -8,7 +8,7 @@
 >
 > import Performance
 > import IO
-> import List (find, nub)
+> import Data.List (find, nub)
 
 \end{verbatim} 
 
