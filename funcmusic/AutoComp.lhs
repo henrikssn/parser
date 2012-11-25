@@ -38,7 +38,15 @@ plays a note which is inconsistent with the chord being played, it is called
 dissonance. Dissonance is a powerful device to use when composing music, but 
 it takes much practice to grasp it fully.
 
-
+> type BassStyle = [(Int, Ratio Int)]
+> basic, calypso, boogie :: BassStyle
+> basic                 = [(0, 1%2), (4, 1%2)]
+> calypso               = [(-1, 1%4), (0, 1%8), (2, 1%8),
+>                          (-1, 1%4), (0, 1%8), (2, 1%8)]
+> boogie                = [(0, 1%8), (4, 1%8),
+>                          (5, 1%8), (4, 1%8),
+>                          (0, 1%8), (4, 1%8),
+>                          (5, 1%8), (4, 1%8)]
 
 autoBass :: BassStyle -> Key -> ChordProgression -> Music
 
