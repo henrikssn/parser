@@ -12,9 +12,9 @@ the file.
 > import MidiFile
 > import System.IO
 > import Bitops (fromBytes, bshiftl, bTrunc, bSplitAt)
-> import Data.Maybe (fromJust)
+> import Maybe (fromJust)
 > import HaskoreUtils (unlinesS, rightS, concatS)
-> import Control.Monad
+> import Monad
 
 \end{verbatim}
 

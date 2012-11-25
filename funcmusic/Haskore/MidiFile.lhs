@@ -13,7 +13,7 @@
 >        defST, defDurT
 >	 ) where
 
-> import Data.Ix
+> import Ix
 
 \end{verbatim}
 

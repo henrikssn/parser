@@ -58,8 +58,8 @@ the gory details.
 > import Performance
 > import MidiFile
 > import GeneralMidi
-> import Data.List(partition)
-> import Data.Char(toLower,toUpper)
+> import List(partition)
+> import Char(toLower,toUpper)
 
 \end{verbatim} 
 
