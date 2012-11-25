@@ -7,7 +7,7 @@
 >
 > import CSound
 > import IO
-> import System( system )
+> import System.Process( system )
 
 \end{vebatim}
 

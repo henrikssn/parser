@@ -8,7 +8,7 @@
 > import Basics  
 > import Performance
 > import HaskToMidi 
-> import System( system )
+> import System.Process( system )
 > import GeneralMidi
 > import OutputMidi
 >

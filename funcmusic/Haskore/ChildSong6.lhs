@@ -14,7 +14,7 @@
 > 
 > -- repeat something n times
 > times  1    m = m
-> times (n+1) m = m :+: (times n m)
+> times  n    m = m :+: (times n m)
 > 
 > -- Baseline:
 > b1 = lmap (fd dqn) [b  3, fs 4, g  4, fs 4]
