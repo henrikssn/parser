@@ -65,7 +65,22 @@ This exercise will be restricted to three fundamental bass styles: "simple",
 
 
 
-autoBass :: BassStyle -> Key -> ChordProgression -> Music
+> autoBass :: BassStyle -> Key -> ChordProgression -> Music
+> autoBass style key = line . (map toMusic) . (bassGen (cycle style) key)
+>                      where toMusic :: (Chord, Dur) -> Music
+>                            toMusic (ch,du) = Note (fst ch,4) du [Volume 80]
+
+> bassGen :: BassStyle -> key -> ChordProgression -> ChordProgression
+> bassGen _ _ [] = []
+> bassGen style@((offset,sdur):srest) key chords@((chord,cdur):crest)
+>   | sdur == 0 = bassGen srest key chords
+>   | cdur == 0 = bassGen style key crest
+>   | otherwise = app dur : (bassGen
+>                           (((offset, sdur - dur) : srest)
+>                           key
+>                           ((chord, cdur - dur) : crest))
+>           where dur = min sdur cdur
+>                 app dur = ((fst $ trans offset (fst chord, 3), snd chord), dur)
 
 > major :: PitchClass -> [PitchClass]
 > major pc = map (\x -> fst $ trans x (pc,5)) [0,2,4,5,7,9,11]
