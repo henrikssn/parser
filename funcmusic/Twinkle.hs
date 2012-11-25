@@ -1,7 +1,6 @@
 module Twinkle where
 import Haskore
 
-fd d n = n d v
 vol  n = n   v
 v      = [Volume 80]
 lmap f l = line (map f l)
