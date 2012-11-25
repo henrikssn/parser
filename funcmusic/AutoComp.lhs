@@ -76,7 +76,10 @@ For our purposes, a chord is determined by a pitch-class and a mode. e.g.,
 > type Key = Chord
 > type ChordProgression = [(Chord, Ratio Int)]
 > autoChord :: Key -> ChordProgression -> Music
-> --autoChord k cp = map 
+> -- autoChord k cp = map 
+
+> -- durackord:  grundtonen + 4 semiton + 3 semiton
+> -- mollackord: grundtonen + 3 semiton + 4 semiton
 
 Accidentals and when to break the rules
 ---------------------------------------
