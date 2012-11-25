@@ -29,7 +29,7 @@ lwm :: Eq a => a -> [a] -> [a] -> Maybe [a]
 lwm wc aas (b:bs) = mmap (b:) (match wc aas bs)
 
 swm :: Eq a => a -> [a] -> [a] -> Maybe [a]
-swm wc (_:as) (b:bs) = mmap (\x -> [b]) (match wc as bs) 
+swm wc (_:as) (b:bs) = mmap (\_ -> [b]) (match wc as bs) 
 
 -- Test cases --------------------
 
