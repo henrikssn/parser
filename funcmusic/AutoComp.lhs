@@ -53,19 +53,19 @@ Bass styles
 This exercise will be restricted to three fundamental bass styles: "simple", 
 "calypso", and "boogie".
 
-> type BassStyle = [(Int, Ratio Int)]
+> type BassStyle = [(Int, Dur)]
 > basic, calypso, boogie :: BassStyle
-> basic                 = [(0, 1%2), (4, 1%2)]
-> calypso               = [(-1, 1%4), (0, 1%8), (2, 1%8),
->                          (-1, 1%4), (0, 1%8), (2, 1%8)]
-> boogie                = [(0, 1%8), (4, 1%8),
->                          (5, 1%8), (4, 1%8),
->                          (0, 1%8), (4, 1%8),
->                          (5, 1%8), (4, 1%8)]
+> basic                 = [(0, hn), (4, hn)]
+> calypso               = [(-1, qn), (0, en), (2, en),
+>                          (-1, qn), (0, en), (2, en)]
+> boogie                = [(0, en), (4, en),
+>                          (5, en), (4, en),
+>                          (0, en), (4, en),
+>                          (5, en), (4, en)]
 
 
 
-> autoBass :: BassStyle -> Key -> ChordProgression -> Music
+autoBass :: BassStyle -> Key -> ChordProgression -> Music
 
 
 > type Chord = (PitchClass, Mode)
@@ -74,9 +74,10 @@ For our purposes, a chord is determined by a pitch-class and a mode. e.g.,
 (C, Major) :: Chord.
 
 > type Key = Chord
-> type ChordProgression = [(Chord, Ratio Int)]
+> type ChordProgression = [(Chord, Dur)]
 > autoChord :: Key -> ChordProgression -> Music
-> -- autoChord k cp = map 
+> autoChord k cp = map (\(cho,du) -> [Note pc du, Trans 4 (Note pc du), Trans 3 (Note pc du)]) cp
+>                  where pc = (fst cho,4)
 
 > -- durackord:  grundtonen + 4 semiton + 3 semiton
 > -- mollackord: grundtonen + 3 semiton + 4 semiton
