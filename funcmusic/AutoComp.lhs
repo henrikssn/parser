@@ -75,12 +75,9 @@ This exercise will be restricted to three fundamental bass styles: "simple",
 > bassGen style@((offset,sdur):srest) key chords@((chord,cdur):crest)
 >   | sdur == 0 = bassGen srest key chords
 >   | cdur == 0 = bassGen style key crest
->   | otherwise = app dur : (bassGen
->                           (((offset, sdur - dur) : srest)
->                           key
->                           ((chord, cdur - dur) : crest))
->           where dur = min sdur cdur
->                 app dur = ((fst $ trans offset (fst chord, 3), snd chord), dur)
+>   | otherwise = app dur : (bassGen ((offset, sdur - dur) : srest) key ((chord, cdur - dur) : crest))
+>                 where dur = min sdur cdur
+>                       app dur = ((fst $ trans offset (fst chord, 3), snd chord), dur)
 
 > major :: PitchClass -> [PitchClass]
 > major pc = map (\x -> fst $ trans x (pc,5)) [0,2,4,5,7,9,11]
