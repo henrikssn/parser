@@ -1,5 +1,5 @@
 > module AutoComp where
-> import Haskore hiding (chord, Key)
+> import Haskore hiding (Key)
 
 ------------------------------------------------------------------------------
 
@@ -76,9 +76,9 @@ For our purposes, a chord is determined by a pitch-class and a mode. e.g.,
 > type Key = Chord
 > type ChordProgression = [(Chord, Dur)]
 > autoChord :: Key -> ChordProgression -> Music
-> autoChord k cp = map (\(cho,du) -> [Note pc du, Trans 4 (Note pc du), Trans 3 (Note pc du)]) cp
->                  where pc = (fst cho,4)
-
+> autoChord k = line . (map createChord)
+>                  where createChord (cho,du) = chord [Note (fst cho,4) du v, Trans 4 (Note (fst cho,4) du v), Trans 3 (Note (fst cho,4) du v)]
+>                        v = [Volume 80]
 > -- durackord:  grundtonen + 4 semiton + 3 semiton
 > -- mollackord: grundtonen + 3 semiton + 4 semiton
 
