@@ -50,7 +50,8 @@ major.
 Bass styles
 -----------
 
-This exercise will be 
+This exercise will be restricted to three fundamental bass styles: "simple", 
+"calypso", and "boogie".
 
 > type BassStyle = [(Int, Ratio Int)]
 > basic, calypso, boogie :: BassStyle
@@ -62,9 +63,18 @@ This exercise will be
 >                          (0, 1%8), (4, 1%8),
 >                          (5, 1%8), (4, 1%8)]
 
+
+
 > autoBass :: BassStyle -> Key -> ChordProgression -> Music
 
+
+> type Chord = (PitchClass, Mode)
+
+For our purposes, a chord is determined by a pitch-class and a mode. e.g.,
+(C, Major) :: Chord.
+
 > autoChord :: Key -> ChordProgression -> Music
+> autoChord k cp = map 
 
 Accidentals and when to break the rules
 ---------------------------------------
