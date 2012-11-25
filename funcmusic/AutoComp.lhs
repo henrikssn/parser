@@ -67,6 +67,11 @@ This exercise will be restricted to three fundamental bass styles: "simple",
 
 autoBass :: BassStyle -> Key -> ChordProgression -> Music
 
+> major :: PitchClass -> [PitchClass]
+> major pc = map (\x -> fst $ trans x (pc,5)) [0,2,4,5,7,9,11]
+
+> minor :: PitchClass -> [PitchClass]
+> minor pc = map (\x -> fst $ trans x (pc,5)) [0,2,3,5,7,9,11]
 
 > type Chord = (PitchClass, Mode)
 
@@ -77,7 +82,9 @@ For our purposes, a chord is determined by a pitch-class and a mode. e.g.,
 > type ChordProgression = [(Chord, Dur)]
 > autoChord :: Key -> ChordProgression -> Music
 > autoChord k = line . (map createChord)
->                  where createChord (cho,du) = chord [Note (fst cho,4) du v, Trans 4 (Note (fst cho,4) du v), Trans 3 (Note (fst cho,4) du v)]
+>                  where createChord (cho,du) = chord [Note (fst cho,4) du v, 
+>                                                      Note (trans 4 (fst cho,4)) du v, 
+>                                                      Note (trans 7 (fst cho,4)) du v]
 >                        v = [Volume 80]
 > -- durackord:  grundtonen + 4 semiton + 3 semiton
 > -- mollackord: grundtonen + 3 semiton + 4 semiton
