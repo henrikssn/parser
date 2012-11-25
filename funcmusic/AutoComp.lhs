@@ -83,9 +83,12 @@ For our purposes, a chord is determined by a pitch-class and a mode. e.g.,
 > autoChord :: Key -> ChordProgression -> Music
 > autoChord k = line . (map createChord)
 >                  where createChord (cho,du) = chord [Note (fst cho,4) du v, 
->                                                      Note (trans 4 (fst cho,4)) du v, 
+>                                                      Note (trans (third cho) (fst cho,4)) du v, 
 >                                                      Note (trans 7 (fst cho,4)) du v]
->                        v = [Volume 80]
+>                        v       = [Volume 80]
+>                        third (_, Major) = 4 
+>                        third (_, Minor) = 3
+
 > -- durackord:  grundtonen + 4 semiton + 3 semiton
 > -- mollackord: grundtonen + 3 semiton + 4 semiton
 
