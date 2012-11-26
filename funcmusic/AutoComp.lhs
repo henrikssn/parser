@@ -20,6 +20,17 @@ A system for automatically generating simple bass lines given a key and a chord
 progression, implemented in literate Haskell using the Haskore music library.
 
 
+Building this module
+--------------------
+
+We use an ancient version of Haskore which does not link with the Haskell 2010
+libraries. This is complicated as the campus machines run different versions of
+GHC. Namely, the machine at [login.student.lth.se] runs the older 6.12.3, but
+the authors have encountered versions as recent as 7.4... in some University
+buildings. Parts of "haskore-vintage" will fail to terminate on recent Haskells
+even if the imports are updated, so the 6.12.3 version is necessary to compile.
+
+
 Chords and keys
 ---------------
 
