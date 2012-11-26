@@ -84,10 +84,10 @@ This exercise will be restricted to three fundamental bass styles: "simple",
 >                            | otherwise = Note (fst ch,2) du vob
 
 > major :: PitchClass -> [PitchClass]
-> major pc = map (\x -> fst $ trans x (pc,5)) [0,2,4,5,7,9,11]
+> major pc = map (fst . flip trans (pc,5)) [0,2,4,5,7,9,11]
 
 > minor :: PitchClass -> [PitchClass]
-> minor pc = map (\x -> fst $ trans x (pc,5)) [0,2,3,5,7,9,11]
+> minor pc = map (fst . flip trans (pc,5)) [0,2,3,5,7,9,11]
 
 > type Chord = (PitchClass, Mode)
 
