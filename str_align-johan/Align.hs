@@ -1,7 +1,7 @@
 module Align where
 
-{- A 'space' is represented by Nothing. This preserves generality
- - over types which may not have an obvious 'space' value.
+{- A 'space' is represented by Nothing. This preserves generality over types
+ - which may not have an obvious 'space' value.
  -}
 
 scMatch =     0
@@ -19,4 +19,22 @@ gradeScore (Just x, Just y) | x == y    = scMatch
                             | otherwise = scMismatch
 gradeScore (_,      _)      = scSpace
                             
+attachHeads :: a -> a -> [([a], [a])] -> [([a], [a])]
+attachHeads h1 h2 lst = [(h1:xs, h2:xs) | (xs, ys) <- lst]
 
+{- Explanation: the function prepends h1 and h2 to the fst and snd list of each
+ - tuple in lst, respectively.
+ -}
+
+maximaBy :: Ord b => (a -> b) -> [a] -> [a]
+maximaBy _    []     = []
+maximaBy valf (x:xs) = foldr select [x] xs 
+                           where select e acc@(a:_) 
+                                   | (valf e) > (valf a)     = [e]
+                                   | (valf e) == (valf a)    = e : acc
+                                   | otherwise               = acc
+
+type AlignmentType = (String, String)
+
+optAlignments :: String -> String -> [AlignmentType]
+optAlignments _ _ = []
