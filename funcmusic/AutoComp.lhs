@@ -53,6 +53,8 @@ Bass styles
 This exercise will be restricted to three fundamental bass styles: "simple", 
 "calypso", and "boogie".
 
+> vol = [Volume 80]
+
 > type BassStyle = [(Int, Dur)]
 > basic, calypso, boogie :: BassStyle
 > basic                 = [(0, hn), (4, hn)]
@@ -68,7 +70,7 @@ This exercise will be restricted to three fundamental bass styles: "simple",
 > autoBass :: BassStyle -> Key -> ChordProgression -> Music
 > autoBass style key = line . (map toMusic) . (bassGen (cycle style) key)
 >                      where toMusic :: (Chord, Dur) -> Music
->                            toMusic (ch,du) = Note (fst ch,4) du [Volume 80]
+>                            toMusic (ch,du) = Note (fst ch,4) du vol
 
 > bassGen :: BassStyle -> key -> ChordProgression -> ChordProgression
 > bassGen _ _ [] = []
@@ -94,10 +96,9 @@ For our purposes, a chord is determined by a pitch-class and a mode. e.g.,
 > type ChordProgression = [(Chord, Dur)]
 > autoChord :: Key -> ChordProgression -> Music
 > autoChord k = line . (map createChord)
->                  where createChord (cho,du) = chord [Note (fst cho,4) du v, 
->                                                      Note (trans (third cho) (fst cho,4)) du v, 
->                                                      Note (trans 7 (fst cho,4)) du v]
->                        v       = [Volume 80]
+>                  where createChord (cho,du) = chord [Note (fst cho,4) du vol, 
+>                                                      Note (trans (third cho) (fst cho,4)) du vol, 
+>                                                      Note (trans 7 (fst cho,4)) du vol]
 >                        third (_, Major) = 4 
 >                        third (_, Minor) = 3
 
