@@ -57,7 +57,7 @@ This exercise will be restricted to three fundamental bass styles: "simple",
 > voc = [Volume 80]
 
 > type BassStyle = [(Int, Dur)]
-> basic, calypso, boogie :: BassStyle
+> basic, calypso, boogie, house :: BassStyle
 > basic                 = [(0, hn), (4, hn)]
 > calypso               = [(-1, qn), (0, en), (2, en),
 >                          (-1, qn), (0, en), (2, en)]
@@ -65,7 +65,7 @@ This exercise will be restricted to three fundamental bass styles: "simple",
 >                          (5, en), (4, en),
 >                          (0, en), (4, en),
 >                          (5, en), (4, en)]
-
+> house                 = [(-1,en), (0,en)]
 
 
 > autoBass :: BassStyle -> Key -> ChordProgression -> Music
@@ -81,7 +81,7 @@ This exercise will be restricted to three fundamental bass styles: "simple",
 >                       app dur = ((fst $ trans offset (fst chord, 3), snd chord), dur)
 >                       toMusic (ch,du)
 >                            | offset == -1 = Rest du
->                            | otherwise = Note (fst ch,4) du vob
+>                            | otherwise = Note (fst ch,2) du vob
 
 > major :: PitchClass -> [PitchClass]
 > major pc = map (\x -> fst $ trans x (pc,5)) [0,2,4,5,7,9,11]
@@ -98,9 +98,9 @@ For our purposes, a chord is determined by a pitch-class and a mode. e.g.,
 > type ChordProgression = [(Chord, Dur)]
 > autoChord :: Key -> ChordProgression -> Music
 > autoChord k = line . (map createChord)
->                  where createChord (cho,du) = chord [Note (fst cho,4) du voc, 
->                                                      Note (trans (third cho) (fst cho,4)) du voc, 
->                                                      Note (trans 7 (fst cho,4)) du voc]
+>                  where createChord (cho,du) = chord [Note (fst cho,3) du voc, 
+>                                                      Note (trans (third cho) (fst cho,3)) du voc, 
+>                                                      Note (trans 7 (fst cho,3)) du voc]
 >                        third (_, Major) = 4 
 >                        third (_, Minor) = 3
 
