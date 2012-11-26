@@ -53,7 +53,8 @@ Bass styles
 This exercise will be restricted to three fundamental bass styles: "simple", 
 "calypso", and "boogie".
 
-> vol = [Volume 80]
+> vob = [Volume 80]
+> voc = [Volume 80]
 
 > type BassStyle = [(Int, Dur)]
 > basic, calypso, boogie :: BassStyle
@@ -68,18 +69,19 @@ This exercise will be restricted to three fundamental bass styles: "simple",
 
 
 > autoBass :: BassStyle -> Key -> ChordProgression -> Music
-> autoBass style key = line . (map toMusic) . (bassGen (cycle style) key)
->                      where toMusic :: (Chord, Dur) -> Music
->                            toMusic (ch,du) = Note (fst ch,4) du vol
+> autoBass style key = line . bassGen (cycle style) key
 
-> bassGen :: BassStyle -> key -> ChordProgression -> ChordProgression
+> bassGen :: BassStyle -> key -> ChordProgression -> [Music] 
 > bassGen _ _ [] = []
 > bassGen style@((offset,sdur):srest) key chords@((chord,cdur):crest)
 >   | sdur == 0 = bassGen srest key chords
 >   | cdur == 0 = bassGen style key crest
->   | otherwise = app dur : (bassGen ((offset, sdur - dur) : srest) key ((chord, cdur - dur) : crest))
+>   | otherwise = toMusic (app dur) : (bassGen ((offset, sdur - dur) : srest) key ((chord, cdur - dur) : crest))
 >                 where dur = min sdur cdur
 >                       app dur = ((fst $ trans offset (fst chord, 3), snd chord), dur)
+>                       toMusic (ch,du)
+>                            | offset == -1 = Rest du
+>                            | otherwise = Note (fst ch,4) du vob
 
 > major :: PitchClass -> [PitchClass]
 > major pc = map (\x -> fst $ trans x (pc,5)) [0,2,4,5,7,9,11]
@@ -96,9 +98,9 @@ For our purposes, a chord is determined by a pitch-class and a mode. e.g.,
 > type ChordProgression = [(Chord, Dur)]
 > autoChord :: Key -> ChordProgression -> Music
 > autoChord k = line . (map createChord)
->                  where createChord (cho,du) = chord [Note (fst cho,4) du vol, 
->                                                      Note (trans (third cho) (fst cho,4)) du vol, 
->                                                      Note (trans 7 (fst cho,4)) du vol]
+>                  where createChord (cho,du) = chord [Note (fst cho,4) du voc, 
+>                                                      Note (trans (third cho) (fst cho,4)) du voc, 
+>                                                      Note (trans 7 (fst cho,4)) du voc]
 >                        third (_, Major) = 4 
 >                        third (_, Minor) = 3
 
