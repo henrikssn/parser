@@ -24,6 +24,6 @@ twinkleChords = map (\(ch,du) -> ((ch,Major),du)) $
 
 --exbass = lmap (fd hn) [c 3, g 2, c 3, g 2, f 3, e 3, d 3, c 3]
 
-twinkle = Instr "piano" (Tempo 3 (Phrase [Dyn SF] $ twinkleMelody :=: autoChord (C,Major) twinkleChords
-                                                  :=: autoBass basic (C,Major) twinkleChords))
+twinkle = Instr "piano" (Tempo 2 (Phrase [Dyn SF] $ twinkleMelody :=: autoChord (C,Major) twinkleChords
+                                                  :=: autoBass calypso (C,Major) twinkleChords))
 
