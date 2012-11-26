@@ -20,6 +20,17 @@ A system for automatically generating simple bass lines given a key and a chord
 progression, implemented in literate Haskell using the Haskore music library.
 
 
+Building this module
+--------------------
+
+We use an ancient version of Haskore which does not link with the Haskell 2010
+libraries. This is complicated as the campus machines run different versions of
+GHC. Namely, the machine at [login.student.lth.se] runs the older 6.12.3, but
+the authors have encountered versions as recent as 7.4... in some University
+buildings. Parts of "haskore-vintage" will fail to terminate on recent Haskells
+even if the imports are updated, so the 6.12.3 version is necessary to compile.
+
+
 Chords and keys
 ---------------
 
@@ -46,15 +57,29 @@ can be remedied by lowering C# -> C, giving the chord A minor.  It turns out
 that A minor is a much more pleasing chord for simple music in the key of C
 major.
 
+For our purposes, a chord is determined by a pitch-class and a mode. e.g.,
+(C, Major) :: Chord. Many more chords are possible but we will restrict 
+ourselves to these two fundamental chords.
+
+> type Chord = (PitchClass, Mode)
+> type Key = Chord
+> type ChordProgression = [(Chord, Dur)]
+> autoChord :: Key -> ChordProgression -> Music
+> autoChord k = line . (map createChord)
+>                  where createChord (cho,du) = 
+>                               chord [Note (fst cho,3) du voc, 
+>                                      Note (trans (third cho) (fst cho,3)) du voc, 
+>                                      Note (trans 7 (fst cho,3)) du voc]
+>                        third (_, Major) = 4 
+>                        third (_, Minor) = 3
+
 
 Bass styles
 -----------
 
 This exercise will be restricted to three fundamental bass styles: "simple", 
-"calypso", and "boogie".
-
-> vob = [Volume 80]
-> voc = [Volume 80]
+"calypso", and "boogie". We also add an improvised "house" bass of the kind 
+found in modern electronic music.
 
 > type BassStyle = [(Int, Dur)]
 > basic, calypso, boogie, house :: BassStyle
@@ -66,52 +91,53 @@ This exercise will be restricted to three fundamental bass styles: "simple",
 >                          (0, en), (4, en),
 >                          (5, en), (4, en)]
 > house                 = [(-1,en), (0,en)]
-
-
+>
 > autoBass :: BassStyle -> Key -> ChordProgression -> Music
 > autoBass style key = line . bassGen (cycle style) key
-
+>
 > bassGen :: BassStyle -> key -> ChordProgression -> [Music] 
 > bassGen _ _ [] = []
 > bassGen style@((offset,sdur):srest) key chords@((chord,cdur):crest)
 >   | sdur == 0 = bassGen srest key chords
 >   | cdur == 0 = bassGen style key crest
->   | otherwise = toMusic (app dur) : (bassGen ((offset, sdur - dur) : srest) key ((chord, cdur - dur) : crest))
+>   | otherwise = toMusic (app dur) : (bassGen ((offset, sdur - dur) : srest) 
+>                                              key 
+>                                              ((chord, cdur - dur) : crest))
 >                 where dur = min sdur cdur
 >                       app dur = ((fst $ trans offset (fst chord, 3), snd chord), dur)
 >                       toMusic (ch,du)
 >                            | offset == -1 = Rest du
 >                            | otherwise = Note (fst ch,2) du vob
 
-> major :: PitchClass -> [PitchClass]
-> major pc = map (\x -> fst $ trans x (pc,5)) [0,2,4,5,7,9,11]
 
-> minor :: PitchClass -> [PitchClass]
-> minor pc = map (\x -> fst $ trans x (pc,5)) [0,2,3,5,7,9,11]
+The example songs
+-----------------
 
-> type Chord = (PitchClass, Mode)
+The mandatory example song is "Twinkle, twinkle, litte star". In addition
+we have chosen the song "We'll be coming back" by Calvin Harris, an electronic 
+song which is currently popular in dance clubs around Lund.
 
-For our purposes, a chord is determined by a pitch-class and a mode. e.g.,
-(C, Major) :: Chord.
+The songs are transcribed into separate modules, as Twinkle.hs and Coming.hs.
 
-> type Key = Chord
-> type ChordProgression = [(Chord, Dur)]
-> autoChord :: Key -> ChordProgression -> Music
-> autoChord k = line . (map createChord)
->                  where createChord (cho,du) = chord [Note (fst cho,3) du voc, 
->                                                      Note (trans (third cho) (fst cho,3)) du voc, 
->                                                      Note (trans 7 (fst cho,3)) du voc]
->                        third (_, Major) = 4 
->                        third (_, Minor) = 3
 
-> -- durackord:  grundtonen + 4 semiton + 3 semiton
-> -- mollackord: grundtonen + 3 semiton + 4 semiton
+Volume
+------
+
+The volume specifies how loud an instrument should be. We have adjusted the 
+volumes to sound well with the given sample music.
+
+In real music, a different volume also suggests a different tonal quality but 
+this is not so in the simple kind of electronic music we are concerned with.
+
+> vob = [Volume 80]
+> voc = [Volume 80]
+
 
 Accidentals and when to break the rules
 ---------------------------------------
 
 The rules given above are only valid for the simplest kinds of music. In fact,
-much of modern music is devoted to different ways of breaking these rules.  In
+much of modern music is devoted to different ways of breaking these rules. In
 some cases it can be more interesting and satsifying to deliberately play a
 note out of key; such notes are called ACCIDENTALS. When the melody plays a
 note which is inconsistent with the chord being played, it is said to be in
