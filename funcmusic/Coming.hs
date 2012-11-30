@@ -20,5 +20,5 @@ comingChords = concat $ replicate 3 c1
 
 comingSong = comingMelody :=: (autoChord (F, Major) comingChords) :=: (autoBass house (F,Major) comingChords)
 
-coming = Instr "piano" (Tempo 2 (Phrase [Dyn SF] comingSong))
+coming = Instr "horn" (Tempo 2 (Phrase [Dyn SF] comingSong))
 
