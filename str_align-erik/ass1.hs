@@ -19,23 +19,21 @@ score c1 c2
 
 
 simScore xs ys = simLen (length xs) (length ys)
-    where
+  where
     simLen i j = simTable!!i!!j
     simTable = [[ simEntry i j | j<-[0..]] | i<-[0..]]
     simEntry :: Int -> Int -> Int
     simEntry 0 0 = 0
     simEntry i 0 = simLen (i-1) 0 + score '-' x
-         where
-            x = xs!!(i-1)
+      where x = xs!!(i-1)
     simEntry 0 j = simLen 0 (j-1) + score '-' y
-         where
-            y = ys!!(j-1)
+      where y = ys!!(j-1)
     simEntry i j = maximum [simLen (i-1) (j-1) + score x y,
                             simLen  i    (j-1) + score '-' y,
                             simLen (i-1)  j    + score x '-']
-         where
-            x = xs!!(i-1)
-            y = ys!!(j-1)
+      where
+        x = xs!!(i-1)
+        y = ys!!(j-1)
 
 -- attachHeads: Takes a list of tuples of lists and inserts h1 and 2 first at those lists.
 -- Example: attachHeads '1' '2' [("abc","def"),("ghi",jkl")] = [("1abc","2def"), ("1ghi", "2jkl")]
@@ -62,7 +60,28 @@ optAlignments (x:xs) "" = attachHeads x '-' $ optAlignments xs []
 optAlignments "" (y:ys) = attachHeads '-' y $ optAlignments []  ys
 optAlignments "" "" = [("","")]
 
-
+optAlign xs ys = optLen (length xs) (length ys)
+  where
+    optLen i j = optTable!!i!!j
+    optTable = [[ optEntry i j | j<-[0..]] | i<-[0..]]
+    optEntry :: Int -> Int -> (Int, [AlignmentType])
+    optEntry 0 0 = (0, [])
+    optEntry 0 j = (fst item + score '-' y, [])
+      where
+        item = optLen 0 (j-1)
+        y = ys!!(j-1)
+    optEntry i 0 = (fst item + score x '-', [])
+      where
+        item = optLen (i-1) 0
+        x = xs!!(i-1)
+    optEntry i j = transform $ maximaBy fst $ [(fst (optLen (i-1) (j-1)) + score x y, []),
+                                               (fst (optLen i (j-1)) + score '-' y, []),
+                                               (fst (optLen (i-1) j) + score x '-', [])]
+      where
+        x = xs!!(i-1)
+        y = ys!!(j-1)
+        transform :: [(Int,[AlignmentType])] -> (Int, [AlignmentType])
+        transform = foldr (\(x, ys) (_, acc) -> (x, ys ++ acc)) (0,[])
 --mcsLength
 mcsLength :: Eq a => [a] -> [a] -> Int
 mcsLength xs ys = mcsLen (length xs) (length ys)
