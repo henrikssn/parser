@@ -1,8 +1,11 @@
+-- Test scores
 matchScore = 0
 spaceScore = -1
 mismatchScore = -1
 
-
+-- similarityScore: Returns score of optimal alignment between
+--                  two strings. Score is specified by 'score'
+--                  function.
 similarityScore :: String -> String -> Int
 similarityScore (x:xs) (y:ys) = maximum [similarityScore xs ys + score x y,
                                          similarityScore xs (y:ys) + score '-' x,
@@ -11,13 +14,15 @@ similarityScore (x:xs) "" = similarityScore xs [] + score '-' x
 similarityScore "" (y:ys) = similarityScore [] ys + score '-' y
 similarityScore "" "" = 0
 
+-- score: Returns score between two chars as specified by
+--        'Test scores'.
 score :: Char -> Char -> Int
 score c1 c2
  | c1 == c2 = matchScore
  | c1 == '-' || c2 == '-' = spaceScore
  | otherwise = mismatchScore
 
-
+-- simScore: Optimized version of similarityScore
 simScore xs ys = simLen (length xs) (length ys)
   where
     simLen i j = simTable!!i!!j
@@ -40,7 +45,8 @@ simScore xs ys = simLen (length xs) (length ys)
 attachHeads :: a -> a -> [([a],[a])] -> [([a],[a])] 
 attachHeads h1 h2 aList = [(h1:xs,h2:ys) | (xs,ys) <- aList]
 
-
+-- maximaBy: Returns list of all maximum values as
+--           specified by comparator function
 maximaBy :: Ord b => (a -> b) -> [a] -> [a]
 maximaBy _ [] = []
 maximaBy valueFcn (x:xs) = foldl cmp [x] xs
@@ -50,7 +56,8 @@ maximaBy valueFcn (x:xs) = foldl cmp [x] xs
              | otherwise = (b:bs)
 
 type AlignmentType = (String,String)
-
+-- optAlignments: Returns list of optimal alignments
+--                between two strings
 optAlignments :: String -> String -> [AlignmentType]
 optAlignments (x:xs) (y:ys) = maximaBy compareScore $ (attachHeads x   y $ optAlignments xs ys) ++
                                                       (attachHeads '-' y $ optAlignments (x:xs) ys) ++
@@ -60,48 +67,33 @@ optAlignments (x:xs) "" = attachHeads x '-' $ optAlignments xs []
 optAlignments "" (y:ys) = attachHeads '-' y $ optAlignments []  ys
 optAlignments "" "" = [("","")]
 
+-- optAlign: Optimized version of optAlignments
+optAlign :: String -> String -> (Int, [AlignmentType])
 optAlign xs ys = optLen (length xs) (length ys)
   where
     optLen i j = optTable!!i!!j
     optTable = [[ optEntry i j | j<-[0..]] | i<-[0..]]
     optEntry :: Int -> Int -> (Int, [AlignmentType])
-    optEntry 0 0 = (0, [])
-    optEntry 0 j = (fst item + score '-' y, [])
+    optEntry 0 0 = (0, [("","")])
+    optEntry 0 j = (fst item + score '-' y, attachHeads '-' y $ snd item)
       where
         item = optLen 0 (j-1)
-        y = ys!!(j-1)
-    optEntry i 0 = (fst item + score x '-', [])
+        y = reverse ys!!(j-1)
+    optEntry i 0 = (fst item + score x '-', attachHeads x '-' $ snd item)
       where
         item = optLen (i-1) 0
-        x = xs!!(i-1)
-    optEntry i j = transform $ maximaBy fst $ [(fst (optLen (i-1) (j-1)) + score x y, []),
-                                               (fst (optLen i (j-1)) + score '-' y, []),
-                                               (fst (optLen (i-1) j) + score x '-', [])]
+        x = reverse xs!!(i-1)
+    optEntry i j = transform $ maximaBy fst $ [(fst (optLen (i-1) (j-1)) + score x y,attachHeads x y $  snd (optLen (i-1) (j-1))),
+                                               (fst (optLen i (j-1)) + score '-' y, attachHeads '-' y $ snd (optLen i (j-1))),
+                                               (fst (optLen (i-1) j) + score x '-', attachHeads x '-' $ snd (optLen (i-1) j))]
       where
-        x = xs!!(i-1)
-        y = ys!!(j-1)
+        x = reverse xs!!(i-1)
+        y = reverse ys!!(j-1)
         transform :: [(Int,[AlignmentType])] -> (Int, [AlignmentType])
         transform = foldr (\(x, ys) (_, acc) -> (x, ys ++ acc)) (0,[])
---mcsLength
-mcsLength :: Eq a => [a] -> [a] -> Int
-mcsLength xs ys = mcsLen (length xs) (length ys)
-    where
-         mcsLen i j = mcsTable!!i!!j
-         mcsTable = [[ mcsEntry i j | j<-[0..]] | i<-[0..] ]
-         mcsEntry :: Int -> Int -> Int
-         mcsEntry _ 0 = 0
-         mcsEntry 0 _ = 0
-         mcsEntry i j
-           | x == y    = 1 + mcsLen (i-1) (j-1)
-           | otherwise = max (mcsLen i (j-1)) (mcsLen (i-1) j)
-           where
-              x = xs!!(i-1)
-              y = ys!!(j-1)
 
--- Test values
+-- Test strings
 string1 = "writers"
 string2 = "vintner"
-testSim = similarityScore string1 string2
-checkSim = testSim == -5
-testAlign = optAlignments string1 string2
-checkAlign = testAlign == [("wri-t-ers","-vintner-"),("writ-ers","vintner-"),("wri-t-ers","v-intner-")]
+string3 = "aferociousmonadatemyhamster"
+string4 = "functionalprogrammingrules"
