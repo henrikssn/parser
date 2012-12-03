@@ -37,8 +37,8 @@ type BotBrain = [(Phrase, [Phrase])]
 
 stateOfMind :: BotBrain -> IO (Phrase -> Phrase)
 stateOfMind brain = do
-  randn <- randomIO
-  let dict = chooseResponse randn brain
+  randn <- randomIO :: IO Double
+  let dict = map (map2 (id, pick randn)) brain
   return (rulesApply dict)
 
 rulesApply :: [PhrasePair] -> Phrase -> Phrase
