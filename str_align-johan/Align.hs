@@ -73,8 +73,8 @@ optAlign as bs = optLength (length as) (length bs)
 optAlignments :: String -> String -> [Alignment]
 optAlignments (a:as) (b:bs) = maximaBy compare $ 
         (attachHeads a   b   $ optAlignments as     bs) ++
-        (attachHeads spc b   $ optAlignments (a:as) bs) ++
-        (attachHeads a   spc $ optAlignments as     (b:bs))
+        (attachHeads spc b   $ optAlignments (a:as) bs) ++
+        (attachHeads a   spc $ optAlignments as     (b:bs))
                 where compare = uncurry similarityScore
 optAlignments (a:as) ""     = attachHeads a   spc $ optAlignments as []
 optAlignments ""     (b:bs) = attachHeads spc b   $ optAlignments [] bs
