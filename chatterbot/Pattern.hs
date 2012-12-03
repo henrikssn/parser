@@ -59,6 +59,6 @@ transformationApply wc f str pattern = maybe Nothing
 transformationsApply :: Eq a => a -> ([a] -> [a]) -> [([a], [a])] -> [a] -> Maybe [a]
 transformationsApply _   _ []     _   = Nothing
 transformationsApply wc f ptns str = foldl transform Nothing ptns
-                                     where transform res ptn
-                                            | res == Nothing = transformationApply wc f str ptn
-                                            | otherwise = res
+                                     where transform res ptn = 
+                                                orElse (transformationApply wc f str ptn) res
+
