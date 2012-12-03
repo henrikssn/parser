@@ -1,3 +1,6 @@
+
+import Text.Printf   (printf)
+
 -- Test scores
 matchScore = 0
 spaceScore = -1
@@ -91,6 +94,15 @@ optAlign xs ys = optLen (length xs) (length ys)
         y = reverse ys!!(j-1)
         transform :: [(Int,[AlignmentType])] -> (Int, [AlignmentType])
         transform = foldr (\(x, ys) (_, acc) -> (x, ys ++ acc)) (0,[])
+
+outputOptAlignments str1 str2 = do putStrLn string
+    where optAgn = optAlign str1 str2
+          string = "There are " ++ (show $ length $ snd optAgn) 
+                ++ " optimal alignments\n" ++ concat 
+                ["\n" ++ line1 ++ "\n" ++ line2 ++ "\n" 
+                               | (line1,line2) <- (snd optAgn)]
+
+
 
 -- Test strings
 string1 = "writers"
