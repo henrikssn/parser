@@ -84,10 +84,8 @@ reduce :: Phrase -> Phrase
 reduce = reductionsApply reductions
 
 reductionsApply :: [PhrasePair] -> Phrase -> Phrase
-reductionsApply patterns phrase = 
-  maybe phrase
-        words
-        (transformationsApply _wc_ id (unwrap patterns) $ unwords phrase)
+reductionsApply patterns =
+        try (transformationsApply [_wc_] id patterns)
 
 unwrap = map . map2 $ (unwords, unwords)
 
