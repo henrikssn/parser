@@ -1,5 +1,6 @@
-
-import Text.Printf   (printf)
+-- Assignment 3 by Erik Henriksson
+-- STIL-ID: atp10ehe
+-- Email: erik.henriksson@me.com
 
 -- Test scores
 matchScore = 0
