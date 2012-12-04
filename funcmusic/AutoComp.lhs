@@ -124,7 +124,7 @@ Scales
 > scale :: Chord -> [PitchClass]
 > scale ch
 >   | snd ch == Major = major $ fst ch
->   | otherwise = []
+>   | otherwise = minor $ fst ch
 
 The example songs
 -----------------
