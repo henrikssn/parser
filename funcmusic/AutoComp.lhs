@@ -64,15 +64,49 @@ ourselves to these two fundamental chords.
 > type Chord = (PitchClass, Mode)
 > type Key = Chord
 > type ChordProgression = [(Chord, Dur)]
+>
+> chromaticChord :: [Pitch]
+> chromaticChord = []
+>
 > autoChord :: Key -> ChordProgression -> Music
-> autoChord k = line . (map createChord)
->                  where createChord (cho,du) = 
+> autoChord _ = line . (map createChord)
+>                  where createChord (cho, du) = 
 >                               chord [Note (fst cho,3) du voc, 
 >                                      Note (trans (third cho) (fst cho,3)) du voc, 
 >                                      Note (trans 7 (fst cho,3)) du voc]
 >                        third (_, Major) = 4 
 >                        third (_, Minor) = 3
-
+>
+> nextChord :: [Pitch] -> Chord -> [Pitch]
+> nextChord pc nc = foldr1 minimize $ chordPerms nc
+>     where minimize cc acc | chordDist pc cc < chordDist pc acc  = cc
+>                           | otherwise = acc
+>
+> lowerBound  = absPitch (E, 4)
+> higherBound = absPitch (G, 5)
+>
+> chordPerms :: Chord -> [[Pitch]]
+> chordPerms (pc, md) = filter filt $ perms ch
+>     where ch = [(sc !! 0,1), (sc !! 2,1), (sc !! 4,1)]
+>           sc = scale (pc,md)
+>           filt (a:_) = absPitch a >= lowerBound
+>
+> perms :: [Pitch] -> [[Pitch]]
+> perms p = p : perms' p
+>     where
+>         perms' ((ptc, oct):ps) 
+>          | absPitch (ptc, oct + 1) < higherBound     = thisPerm : perms' thisPerm
+>          | otherwise = []
+>              where thisPerm = ps ++ [(ptc, oct + 1)] 
+>  
+>
+> chordDist :: [Pitch] -> [Pitch] -> Int
+> chordDist pc nc = sum . (map diff) $ zip pc nc
+>       where diff :: (Pitch, Pitch) -> Int
+>             diff (p1, p2) = abs $ location p2 - location p1
+> 
+> location :: Pitch -> Int
+> location (pcl, oct) = pitchClass pcl + (12 * oct)
 
 Bass styles
 -----------
