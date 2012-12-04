@@ -87,15 +87,13 @@ found in modern electronic music.
 > calypso               = [(-1, qn), (0, en), (2, en),
 >                          (-1, qn), (0, en), (2, en)]
 > boogie                = [(0, en), (4, en),
->                          (5, en), (4, en),
->                          (0, en), (4, en),
 >                          (5, en), (4, en)]
 > house                 = [(-1,en), (0,en)]
 >
 > autoBass :: BassStyle -> Key -> ChordProgression -> Music
 > autoBass style key = line . bassGen (cycle style) key
 >
-> bassGen :: BassStyle -> key -> ChordProgression -> [Music] 
+> bassGen :: BassStyle -> Key -> ChordProgression -> [Music] 
 > bassGen _ _ [] = []
 > bassGen style@((offset,sdur):srest) key chords@((chord,cdur):crest)
 >   | sdur == 0 = bassGen srest key chords
@@ -104,11 +102,26 @@ found in modern electronic music.
 >                                              key 
 >                                              ((chord, cdur - dur) : crest))
 >                 where dur = min sdur cdur
->                       app dur = ((fst $ trans offset (fst chord, 3), snd chord), dur)
+>                       app dur = (((scale chord) !! offset, snd chord), dur)
 >                       toMusic (ch,du)
 >                            | offset == -1 = Rest du
->                            | otherwise = Note (fst ch,2) du vob
+>                            | otherwise = Note (fst ch,pch) du vob
+>                       pch = 2
 
+Scales
+------
+
+
+> major :: PitchClass -> [PitchClass]
+> major pc = map (\x -> fst $ trans x (pc,5)) [0,2,4,5,7,9,11]
+
+> minor :: PitchClass -> [PitchClass]
+> minor pc = map (\x -> fst $ trans x (pc,5)) [0,2,3,5,7,9,11]
+
+> scale :: Chord -> [PitchClass]
+> scale ch
+>   | snd ch == Major = major $ fst ch
+>   | otherwise = []
 
 The example songs
 -----------------
