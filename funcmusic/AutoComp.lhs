@@ -104,9 +104,12 @@ found in modern electronic music.
 >                 where dur = min sdur cdur
 >                       app dur = (((scale chord) !! offset, snd chord), dur)
 >                       toMusic (ch,du)
->                            | offset == -1 = Rest du
->                            | otherwise = Note (fst ch,pch) du vob
->                       pch = 2
+>                           | offset == -1 = Rest du
+>                           | otherwise = Note (calcPitch (fst ch,2)) du vob
+>                       calcPitch p@(pc,pch)
+>                           | absPitch p < 36 = calcPitch (pc,pch+1)
+>                           | absPitch p > 55 = calcPitch (pc,pch-1)
+>                           | otherwise       = p
 
 Scales
 ------
