@@ -65,25 +65,36 @@ ourselves to these two fundamental chords.
 > type Key = Chord
 > type ChordProgression = [(Chord, Dur)]
 >
-> chromaticChord :: [Pitch]
-> chromaticChord = []
->
+
+The autoChord function puts a chorded accompaniment to a song, given its 
+chord progresssion. The key is not used, since we've chosen to specify the
+chord fully in the ChordProgression type. Because nextChord needs to know 
+how the previous chord looked, it's hard to get around explicit recursion.
+
 > autoChord :: Key -> ChordProgression -> Music
-> autoChord _ = line . (map createChord)
->                  where createChord (cho, du) = 
->                               chord [Note (fst cho,3) du voc, 
->                                      Note (trans (third cho) (fst cho,3)) du voc, 
->                                      Note (trans 7 (fst cho,3)) du voc]
->                        third (_, Major) = 4 
->                        third (_, Minor) = 3
+> autoChord _ = line . createChord []
+>     where createChord :: [Pitch] -> ChordProgression -> [Music]
+>           createChord _     []              = []
+>           createChord prevc ((cho, dur):cs) = let thisc = nextChord prevc cho
+>                                               in  foldr1 (:=:) (map (durate dur) thisc) 
+>                                                   : createChord thisc cs
+>               where durate :: Dur -> Pitch -> Music
+>                     durate dur pitch = Note pitch dur voc
+
+The nextChord function decides how to finger the next chord, given how the
+previous chord looked. It tries to put down a good fingering that is as close
+to the previous chord as possible. We do this by generating all the possible
+fingerings and minimizing the distance, brute force style. There are also some
+bounds on how high and low notes we allow in the chord part
+
+> lowerBound  = absPitch (E, 4)
+> higherBound = absPitch (G, 5)
 >
 > nextChord :: [Pitch] -> Chord -> [Pitch]
 > nextChord pc nc = foldr1 minimize $ chordPerms nc
 >     where minimize cc acc | chordDist pc cc < chordDist pc acc  = cc
 >                           | otherwise = acc
 >
-> lowerBound  = absPitch (E, 4)
-> higherBound = absPitch (G, 5)
 >
 > chordPerms :: Chord -> [[Pitch]]
 > chordPerms (pc, md) = filter filt $ perms ch
@@ -98,7 +109,6 @@ ourselves to these two fundamental chords.
 >          | absPitch (ptc, oct + 1) < higherBound     = thisPerm : perms' thisPerm
 >          | otherwise = []
 >              where thisPerm = ps ++ [(ptc, oct + 1)] 
->  
 >
 > chordDist :: [Pitch] -> [Pitch] -> Int
 > chordDist pc nc = sum . (map diff) $ zip pc nc
@@ -117,12 +127,12 @@ found in modern electronic music.
 
 > type BassStyle = [(Int, Dur)]
 > basic, calypso, boogie, house :: BassStyle
-> basic                 = [(0, hn), (4, hn)]
+> basic                 = [(0, hn),  (4, hn)]
 > calypso               = [(-1, qn), (0, en), (2, en),
 >                          (-1, qn), (0, en), (2, en)]
-> boogie                = [(0, en), (4, en),
->                          (5, en), (4, en)]
-> house                 = [(-1,en), (0,en)]
+> boogie                = [(0, en),  (4, en),
+>                          (5, en),  (4, en)]
+> house                 = [(-1,en),  (0,en)]
 >
 > autoBass :: BassStyle -> Key -> ChordProgression -> Music
 > autoBass style key = line . bassGen (cycle style) key
@@ -148,13 +158,14 @@ found in modern electronic music.
 Scales
 ------
 
+We use the major and minor fundamental scales in this exercise.
 
 > major :: PitchClass -> [PitchClass]
 > major pc = map (\x -> fst $ trans x (pc,5)) [0,2,4,5,7,9,11]
-
+>
 > minor :: PitchClass -> [PitchClass]
 > minor pc = map (\x -> fst $ trans x (pc,5)) [0,2,3,5,7,9,11]
-
+>
 > scale :: Chord -> [PitchClass]
 > scale ch
 >   | snd ch == Major = major $ fst ch
@@ -190,7 +201,7 @@ The rules given above are only valid for the simplest kinds of music. In fact,
 much of modern music is devoted to different ways of breaking these rules. In
 some cases it can be more interesting and satsifying to deliberately play a
 note out of key; such notes are called ACCIDENTALS. When the melody plays a
-note which is inconsistent with the chord being played, it is said to be in
+note which is inconsistent with the chord being played, they are said to be in
 DISSONANCE. Dissonance is a powerful device to use when composing music, but it
 takes much practice to grasp it fully.
 
