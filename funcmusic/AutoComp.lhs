@@ -72,6 +72,7 @@ chord fully in the ChordProgression type. Because nextChord needs to know
 how the previous chord looked, it's hard to get around explicit recursion.
 
 > autoChord :: Key -> ChordProgression -> Music
+<<<<<<< HEAD
 > autoChord _ = line . createChord []
 >     where createChord :: [Pitch] -> ChordProgression -> [Music]
 >           createChord _     []              = []
