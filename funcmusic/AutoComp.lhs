@@ -69,13 +69,10 @@ ourselves to these two fundamental chords.
 > chromaticChord = []
 >
 > autoChord :: Key -> ChordProgression -> Music
-> autoChord _ = line . (map createChord)
->                  where createChord (cho, du) = 
->                               chord [Note (fst cho,3) du voc, 
->                                      Note (trans (third cho) (fst cho,3)) du voc, 
->                                      Note (trans 7 (fst cho,3)) du voc]
->                        third (_, Major) = 4 
->                        third (_, Minor) = 3
+> autoChord key = line . (createChords [])
+>   where createChords _ [] = []
+>         createChords lastCh ((ch,du):chs) = (chord $ map (\pi -> Note pi du voc) thisCh) : createChords thisCh chs
+>             where thisCh = nextChord lastCh ch
 >
 > nextChord :: [Pitch] -> Chord -> [Pitch]
 > nextChord pc nc = foldr1 minimize $ chordPerms nc
