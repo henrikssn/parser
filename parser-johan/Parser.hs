@@ -24,8 +24,8 @@ m -# n = m # n >-> snd
 m #- n = m # n >-> fst
 
 spaces :: Parser String
-spaces = let oneSpace = char ? isSpace
-         in  oneSpace # iter oneSpace >-> cons
+spaces = (oneSpace # iter oneSpace >-> cons) ! return ""
+    where oneSpace = char ? isSpace
 
 token :: Parser a -> Parser a
 token m = m #- spaces
