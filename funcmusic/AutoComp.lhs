@@ -149,7 +149,8 @@ found in modern electronic music.
 >                       app dur = (((scale chord) !! offset, snd chord), dur)
 >                       toMusic (ch,du)
 >                           | offset == -1 = Rest du
->                           | otherwise = Note (calcPitch (fst ch,2)) du vob
+>                           | offset < 3 = Note (calcPitch (fst ch,3)) du vob
+>                           | otherwise = Note (calcPitch (fst ch,4)) du vob
 >                       calcPitch p@(pc,pch)
 >                           | absPitch p < 36 = calcPitch (pc,pch+1)
 >                           | absPitch p > 55 = calcPitch (pc,pch-1)
